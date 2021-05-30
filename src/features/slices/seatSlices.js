@@ -63,7 +63,6 @@ export const seatSlice = createSlice({
             .addCase(fetchSeats.rejected, (state) => {
                 state.status = null
             })
-
     }
 });
 

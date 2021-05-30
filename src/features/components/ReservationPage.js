@@ -52,7 +52,6 @@ export default function ReservationPage(props) {
         }
     };
 
-
     return (
         <div>
             <Space align="center" style={{ maxWidth: 1140, paddingTop: 200 }}>

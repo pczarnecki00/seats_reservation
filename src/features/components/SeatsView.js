@@ -36,8 +36,16 @@ export default function SeatsView(props) {
     const amountOfSeats = useSelector(numberOfSeats);
     const isClose = useSelector(seatsNextTo);
 
-    let cols = [...Array(15).keys()];
-    let rows = [...Array(10).keys()];
+    let colsValue = seats?.map(obj=> obj.cords.y);
+    let rowsValue = seats?.map(obj=> obj.cords.x);
+
+    let colsAmount = Math.abs(Math.min(...colsValue) - Math.max(...colsValue)) + 1
+    let rowsAmount = Math.abs(Math.min(...rowsValue) - Math.max(...rowsValue)) + 1
+  
+
+    let cols = [...Array(load? colsAmount : 1 ).keys()];
+    let rows = [...Array(load? rowsAmount : 1 ).keys()];
+
 
 
 
