@@ -24,10 +24,12 @@ import {
 } from "antd";
 
 export default function SeatsView(props) {
+
     const [error, setError] = useState({
         status: false,
         message: ''
     });
+
     const dispatch = useDispatch();
 
     const seats = useSelector(seatsTaken);
@@ -39,8 +41,8 @@ export default function SeatsView(props) {
     let colsValue = seats?.map(obj=> obj.cords.y);
     let rowsValue = seats?.map(obj=> obj.cords.x);
 
-    let colsAmount = Math.abs(Math.min(...colsValue) - Math.max(...colsValue)) + 1
-    let rowsAmount = Math.abs(Math.min(...rowsValue) - Math.max(...rowsValue)) + 1
+    let colsAmount = Math.abs(Math.min(...colsValue) - Math.max(...colsValue)) + 1;
+    let rowsAmount = Math.abs(Math.min(...rowsValue) - Math.max(...rowsValue)) + 1;
   
 
     let cols = [...Array(load? colsAmount : 1 ).keys()];
@@ -61,31 +63,28 @@ export default function SeatsView(props) {
         for (let i = 0; i < seats.length; i++) {
             if (a === seats[i].cords.x && b === seats[i].cords.y) {
                 return true;
-            }
-        }
-    }
-
-
+            };
+        };
+    };
 
     const reservationCheck = (a, b) => {
 
         for (let i = 0; i < seats.length; i++) {
             if (`s${a}${b}` === seats[i].id && seats[i].reserved) {
                 return true;
-            }
-        }
+            };
+        };
 
-    }
+    };
 
     const selectedSeatStyle = (a, b) => {
 
         for (let i = 0; i < selectedSeat.length; i++) {
             if (`s${a}${b}` === selectedSeat.map(obj => obj.id)[i]) {
                 return true
-            }
-        }
-    }
-
+            };
+        };
+    };
 
     const selectSeat = (value) => {
 
@@ -93,9 +92,9 @@ export default function SeatsView(props) {
             dispatch(removeSelectedSeat(value));
         } else if (selectedSeat.length < amountOfSeats) {
             dispatch(setSelectedSeats(value));
-        }
+        };
 
-    }
+    };
 
     const selectSeats = () => {
         let sequential = [];
@@ -103,29 +102,29 @@ export default function SeatsView(props) {
 
         const isSequential = (x) => {
 
-            if (sequential.length === 0) return true
-            return x.cords.y - 1 === sequential[sequential.length - 1].cords.y
+            if (sequential.length === 0) return true;
+            return x.cords.y - 1 === sequential[sequential.length - 1].cords.y;
 
-        }
+        };
 
         const lastCheck = (x) => {
             if (seats.filter(obj => !obj.reserved).length === 0) {
                 setError({
                     status: true,
                     message: 'Brak wolnych miejsc'
-                })
+                });
             } else if (seats.filter(obj => !obj.reserved).length < amountOfSeats) {
                 setError({
                     status: true,
                     message: 'Brak wystarczającej ilości miejsc'
-                })
+                });
             } else if (x.length < amountOfSeats) {
                 setError({
                     status: true,
                     message: 'Brak możliwości wybrania miejsc obok siebie, proszę wybrać najbardziej odpowiadające miejsca ręcznie.'
-                })
-            }
-        }
+                });
+            };
+        };
 
         if (isClose) {
 
@@ -136,9 +135,9 @@ export default function SeatsView(props) {
                 if (isSequential(freeSeats[i])) {
                     sequential.push(freeSeats[i]);
                 } else {
-                    sequential = [freeSeats[i]]
-                }
-            }
+                    sequential = [freeSeats[i]];
+                };
+            };
 
             return sequential.length === amountOfSeats
                 ? dispatch(setSeats(sequential))
@@ -157,8 +156,8 @@ export default function SeatsView(props) {
                 ? dispatch(setSeats(sequential))
                 : lastCheck(sequential)
 
-        }
-    }
+        };
+    };
 
     const toSummary = () => {
         if (selectedSeat.length !== amountOfSeats) {
@@ -169,15 +168,15 @@ export default function SeatsView(props) {
 
             let newArr = seats.map(obj => obj)
             for (let seat of selectedSeat) {
-                newArr = newArr.map(obj => obj.id === seat.id ? { ...obj, reserved: true } : obj)
+                newArr = newArr.map(obj => obj.id === seat.id ? { ...obj, reserved: true } : obj);
             }
 
-            dispatch(updateSeats(newArr))
+            dispatch(updateSeats(newArr));
             localStorage.setItem('seats', JSON.stringify(newArr));
 
-            props.history.push('/summary')
+            props.history.push('/summary');
         }
-    }
+    };
 
 
 
@@ -186,12 +185,12 @@ export default function SeatsView(props) {
             selectSeats()
         }
 
-    }, [load])
+    }, [load]);
 
 
     return (
 
-        <div className="wrapper">
+        <div>
 
             {
                 load === null ?
