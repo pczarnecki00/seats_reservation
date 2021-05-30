@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { seatsNextTo, numberOfSeats} from '../slices/ticketSlices';
+import { seatsNextTo, numberOfSeats } from '../slices/ticketSlices';
 import {
     setSelectedSeats,
     seatsTaken,
@@ -20,6 +20,7 @@ import {
     Button,
     Typography,
     Layout,
+    message,
 } from "antd";
 
 export default function SeatsView(props) {
@@ -99,20 +100,20 @@ export default function SeatsView(props) {
 
         }
 
-        const lastCheck = (x) =>{
-          if (seats.filter(obj => !obj.reserved).length === 0) {
+        const lastCheck = (x) => {
+            if (seats.filter(obj => !obj.reserved).length === 0) {
                 setError({
-                    status:true,
+                    status: true,
                     message: 'Brak wolnych miejsc'
                 })
-            } else if (seats.filter(obj => !obj.reserved).length < amountOfSeats ){
+            } else if (seats.filter(obj => !obj.reserved).length < amountOfSeats) {
                 setError({
-                    status:true,
-                    message: 'Brak wystarczającej ilości miejsce'
+                    status: true,
+                    message: 'Brak wystarczającej ilości miejsc'
                 })
-            } else if ( x.length < amountOfSeats) {
+            } else if (x.length < amountOfSeats) {
                 setError({
-                    status:true,
+                    status: true,
                     message: 'Brak możliwości wybrania miejsc obok siebie, proszę wybrać najbardziej odpowiadające miejsca ręcznie.'
                 })
             }
@@ -128,13 +129,13 @@ export default function SeatsView(props) {
                     sequential.push(freeSeats[i]);
                 } else {
                     sequential = [freeSeats[i]]
-                } 
+                }
             }
 
-            return sequential.length === amountOfSeats 
-            ? dispatch(setSeats(sequential)) 
-            : lastCheck(sequential)
-           
+            return sequential.length === amountOfSeats
+                ? dispatch(setSeats(sequential))
+                : lastCheck(sequential)
+
         } else {
 
             for (let i = 0; i < freeSeats.length; i++) {
@@ -144,34 +145,41 @@ export default function SeatsView(props) {
 
             }
 
-            return sequential.length === amountOfSeats 
-            ? dispatch(setSeats(sequential)) 
-            : lastCheck(sequential)
-        
+            return sequential.length === amountOfSeats
+                ? dispatch(setSeats(sequential))
+                : lastCheck(sequential)
+
         }
     }
 
     const toSummary = () => {
-        let newArr = seats.map(obj => obj)
-        for (let seat of selectedSeat) {
-            newArr = newArr.map(obj => obj.id === seat.id ? { ...obj, reserved: true } : obj)
+        if (selectedSeat.length !== amountOfSeats) {
+
+            message.info('Liczba wybranych miejsc nie zgadza się z liczbą biletów.');
+
+        } else {
+
+            let newArr = seats.map(obj => obj)
+            for (let seat of selectedSeat) {
+                newArr = newArr.map(obj => obj.id === seat.id ? { ...obj, reserved: true } : obj)
+            }
+
+            dispatch(updateSeats(newArr))
+            localStorage.setItem('seats', JSON.stringify(newArr));
+
+            props.history.push('/summary')
         }
-
-        dispatch(updateSeats(newArr))
-
-        localStorage.setItem('seats', JSON.stringify(newArr));
-
-        props.history.push('/summary')
     }
 
 
 
     useEffect(() => {
-        if (load){
-        selectSeats()}
+        if (load) {
+            selectSeats()
+        }
 
     }, [load])
-    
+
 
     return (
 
@@ -188,8 +196,8 @@ export default function SeatsView(props) {
                             <Typography.Title level={2}>Kierunek oglądania</Typography.Title>
                             <Typography.Text>Aby zmienić wybór, klinij w wybrane miejsce po czym wybierz z miejsc dostępnych.</Typography.Text>
 
-                            {error.status 
-                                ? <Typography.Text style={{ color: "red" }}>{error.message}</Typography.Text> 
+                            {error.status
+                                ? <Typography.Text style={{ color: "red" }}>{error.message}</Typography.Text>
                                 : ''
                             }
                             {rows.map(item =>
@@ -200,18 +208,18 @@ export default function SeatsView(props) {
                                     {
                                         cols.map(obj =>
 
-                                            <Col key={obj+1} style={{ padding: " 0 5px" }}>
+                                            <Col key={obj + 1} style={{ padding: " 0 5px" }}>
 
                                                 {
                                                     reservationCheck(item, obj)
-                                                        ? <Col key={obj} style={coordsCheck(item, obj) ? styleReserved : styleHidden}/>
-                                                       
+                                                        ? <Col key={obj} style={coordsCheck(item, obj) ? styleReserved : styleHidden} />
+
                                                         : <Col key={obj} id={`s${item}${obj}`} style={coordsCheck(item, obj)
                                                             ? selectedSeatStyle(item, obj)
                                                                 ? styleSelected
                                                                 : styleFreeSeat
                                                             : styleHidden}
-                                                            onClick={(e) => selectSeat(e.target.id)}/>
+                                                            onClick={(e) => selectSeat(e.target.id)} />
                                                 }
 
                                             </Col>
@@ -229,15 +237,16 @@ export default function SeatsView(props) {
                                     <Col style={styleSelected}></Col><Typography.Text>Miejsca wybrane</Typography.Text>
 
                                     {seats.filter(obj => !obj.reserved).length === 0 || seats.filter(obj => !obj.reserved).length < amountOfSeats
-                                    ? <Button style={{ marginLeft: 30, padding: "0px 50px", height: 50 }} disabled>Rezerwuj</Button> 
-                                    : <Button style={{ marginLeft: 30, padding: "0px 50px", height: 50 }} onClick={toSummary}>Rezerwuj</Button>}
+                                        ? <Button style={{ marginLeft: 30, padding: "0px 50px", height: 50 }} disabled>Rezerwuj</Button>
+                                        : <Button style={{ marginLeft: 30, padding: "0px 50px", height: 50 }} onClick={toSummary}>Rezerwuj</Button>}
                                 </Space>
 
 
                             </Layout.Footer>
                         </Space>
-                        
-                    : <img src={loading} alt="Loader"></img>
+
+                        : <img src={loading} alt="Loader"></img>
             }
         </div>
-)};
+    )
+};
