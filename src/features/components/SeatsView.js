@@ -132,21 +132,21 @@ export default function SeatsView(props) {
 
                 if (sequential.length === amountOfSeats) break
 
-                // Wersja z miejsca oddzielnymi o które prosił Damian
-                
-                if (sequential.length === 0) {
-                    sequential.push(freeSeats[i])
-                } else if ( freeSeats[i].cords.y - sequential[sequential.length - 1].cords.y > 1 && freeSeats[i].cords.x === sequential[sequential.length - 1].cords.x) {
-                    sequential.push(freeSeats[i])
-                } else if (freeSeats[i].cords.x !== sequential[0].cords.x){
-                    sequential = [freeSeats[i]]
-                }
-                // Wersja pierwotna z miejcami obok siebie
-                // if (isSequential(freeSeats[i])) {
-                //     sequential.push(freeSeats[i]);
-                // } else {
-                //     sequential = [freeSeats[i]];
-                // };
+               
+                // Miejsca odzielone 
+                // if (sequential.length === 0) {
+                //     sequential.push(freeSeats[i])
+                // } else if ( freeSeats[i].cords.y - sequential[sequential.length - 1].cords.y > 1 && freeSeats[i].cords.x === sequential[sequential.length - 1].cords.x) {
+                //     sequential.push(freeSeats[i])
+                // } else if (freeSeats[i].cords.x !== sequential[0].cords.x){
+                //     sequential = [freeSeats[i]]
+                // }
+              
+                if (isSequential(freeSeats[i])) {
+                    sequential.push(freeSeats[i]);
+                } else {
+                    sequential = [freeSeats[i]];
+                };
             };
 
             return sequential.length === amountOfSeats
